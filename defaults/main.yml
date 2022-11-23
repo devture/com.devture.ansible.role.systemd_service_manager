@@ -13,8 +13,10 @@ devture_systemd_service_manager_services_list_auto: []
 # devture_systemd_service_manager_services_list_additional:
 #   - name: some-service.service
 #     priority: 1250
+#     groups: ['core', 'special']
 #   - name: another-service.service
 #     priority: 3500
+#     groups: ['addon', 'reverse-proxy']
 devture_systemd_service_manager_services_list_additional: []
 
 # devture_systemd_service_manager_services_list contains a list of systemd services and their priorities.

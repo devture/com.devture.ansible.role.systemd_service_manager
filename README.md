@@ -13,6 +13,10 @@ This is an [Ansible](https://www.ansible.com/) role which manages systemd servic
 
 - **stopping** services, in order, according to their `priority`
 
+- starting/stopping all defined services, or a group of services (`--tags=restart-group`, `--tags=stop-group`)
+
+- restarting services by cleanly stopping them and restarting them, or one by one
+
 
 ## Usage
 
@@ -37,8 +41,13 @@ devture_systemd_service_manager_services_list_auto: |
   }}
 ```
 
-Example playbook invocations:
+Example playbook invocations tags (e.g. `ansible-playbook -i inventory/hosts setup.yml --tags=XXXXX`):
 
-- `ansible-playbook -i inventory/hosts setup.yml --tags=start` (restarts all services and potentially makes them auto-start)
+- `restart`, `restart-all`, `start-all` - restarts all services and potentially makes them auto-start (depending on `devture_systemd_service_manager_services_autostart_enabled`)
 
-- `ansible-playbook -i inventory/hosts setup.yml --tags=stop` (stops all services)
+- `restart-group`, `start-group` - restarts services belonging to the specified group (e.g. `--extra-vars="group=core"`)
+
+- `stop`, `stop-all` - stops all services
+
+- `stop-group` - stops services belonging to the specified group (e.g. `--extra-vars="group=core"`)
+
