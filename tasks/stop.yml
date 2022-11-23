@@ -1,0 +1,7 @@
+---
+
+- name: Ensure systemd services are stopped
+  ansible.builtin.service:
+    name: "{{ item.name }}"
+    state: stopped
+  with_items: "{{ devture_systemd_service_manager_services_list | sort (attribute='priority,name', reverse=true) }}"

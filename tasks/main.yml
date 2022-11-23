@@ -1,0 +1,9 @@
+---
+
+- ansible.builtin.import_tasks: "{{ role_path }}/tasks/start.yml"
+  tags:
+    - start
+
+- ansible.builtin.import_tasks: "{{ role_path }}/tasks/stop.yml"
+  tags:
+    - stop
