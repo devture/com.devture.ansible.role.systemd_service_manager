@@ -20,6 +20,15 @@ devture_systemd_service_manager_services_list_additional: []
 # devture_systemd_service_manager_services_list contains a list of systemd services and their priorities.
 devture_systemd_service_manager_services_list: "{{ devture_systemd_service_manager_services_list_auto + devture_systemd_service_manager_services_list_additional }}"
 
+# devture_systemd_service_manager_service_restart_mode specifies how services are restarted.
+#
+# Supported values:
+# - `clean-stop-start` - services are stopped cleanly (higher priority level stopped earlier) and then started (lower priority level started earlier)
+# - `one-by-one` - services are restarted one by one (lower priority level earlier)
+#
+# The `one-by-one` mode may decrease downtime, but is potentially less reliable and "clean".
+devture_systemd_service_manager_service_restart_mode: clean-stop-start
+
 # devture_systemd_service_manager_services_autostart_enabled controls whether systemd services should auto-start when the system reboots
 devture_systemd_service_manager_services_autostart_enabled: true
 

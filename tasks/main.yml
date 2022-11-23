@@ -1,5 +1,10 @@
 ---
 
+- ansible.builtin.import_tasks: "{{ role_path }}/tasks/validate_config.yml"
+  tags:
+    - start
+    - stop
+
 - ansible.builtin.import_tasks: "{{ role_path }}/tasks/start.yml"
   tags:
     - start

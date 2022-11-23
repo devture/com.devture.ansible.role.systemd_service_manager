@@ -5,11 +5,11 @@ This is an [Ansible](https://www.ansible.com/) role which manages systemd servic
 
 ## Features
 
-- **starting** (restarting) services, in order, according to their `priority`
+- **starting** (restarting) services, in order, according to their `priority`. Services can all be stopped cleanly and then started anew, or they can be restarted one-by-one (see `devture_systemd_service_manager_service_restart_mode`)
 
 - making services **auto-start** (see `devture_systemd_service_manager_services_autostart_enabled`)
 
-- **verifying** start services managed to start (see `devture_systemd_service_manager_up_verification_enabled`)
+- **verifying** services managed to start (see `devture_systemd_service_manager_up_verification_enabled`)
 
 - **stopping** services, in order, according to their `priority`
 
