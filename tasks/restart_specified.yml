@@ -6,20 +6,36 @@
 
 - when: devture_systemd_service_manager_service_restart_mode == 'clean-stop-start'
   block:
-    - name: Ensure systemd services are stopped
-      ansible.builtin.service:
-        name: "{{ item.name }}"
-        state: stopped
-      with_items: "{{ devture_systemd_service_manager_services_list_to_work_with | sort (attribute='priority,name', reverse=true) }}"
-      when: not ansible_check_mode
+    # When it's just one service, do a restart instead of clean stop and then start.
+    # A restart is less disruptive, because services that have this one as a dependency
+    # will also stop and start again. If we stop this service cleanly and then start it,
+    # services that have this one as a dependency will stop and remain stopped.
+    - when: devture_systemd_service_manager_services_list_to_work_with | length == 1
+      block:
+        - name: Ensure single systemd service is restarted
+          ansible.builtin.service:
+            name: "{{ item.name }}"
+            state: restarted
+            enabled: "{{ devture_systemd_service_manager_services_autostart_enabled }}"
+          with_items: "{{ devture_systemd_service_manager_services_list_to_work_with | sort (attribute='priority,name', reverse=true) }}"
+          when: not ansible_check_mode
 
-    - name: Ensure systemd services are started
-      ansible.builtin.service:
-        name: "{{ item.name }}"
-        state: started
-        enabled: "{{ devture_systemd_service_manager_services_autostart_enabled }}"
-      with_items: "{{ devture_systemd_service_manager_services_list_to_work_with | sort (attribute='priority,name') }}"
-      when: not ansible_check_mode
+    - when: devture_systemd_service_manager_services_list_to_work_with | length > 1
+      block:
+        - name: Ensure systemd services are stopped
+          ansible.builtin.service:
+            name: "{{ item.name }}"
+            state: stopped
+          with_items: "{{ devture_systemd_service_manager_services_list_to_work_with | sort (attribute='priority,name', reverse=true) }}"
+          when: not ansible_check_mode
+
+        - name: Ensure systemd services are started
+          ansible.builtin.service:
+            name: "{{ item.name }}"
+            state: started
+            enabled: "{{ devture_systemd_service_manager_services_autostart_enabled }}"
+          with_items: "{{ devture_systemd_service_manager_services_list_to_work_with | sort (attribute='priority,name') }}"
+          when: not ansible_check_mode
 
 - when: devture_systemd_service_manager_service_restart_mode == 'one-by-one'
   block:
