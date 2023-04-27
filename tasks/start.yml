@@ -31,7 +31,7 @@
       with_items: "{{ devture_systemd_service_manager_services_list | sort (attribute='priority,name') }}"
       when: not ansible_check_mode
 
-- when: devture_systemd_service_manager_up_verification_enabled | bool
+- when: devture_systemd_service_manager_up_verification_enabled | bool and not ansible_check_mode
   name: Verify that systemd services started successfully
   block:
     # If we check service state immediately, we may succeed,
