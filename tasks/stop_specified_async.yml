@@ -1,0 +1,39 @@
+---
+
+# Suppress 'risky-shell-pipe' lint error due to the required fix `set -o pipefail` not being supported by all shells.
+# Additionally, echo commands generally should not fail.
+- name: Ensure systemd services are stopped
+  ansible.builtin.shell: >
+    echo "{{ devture_systemd_service_manager_services_list_to_work_with | sort(attribute='priority,name', reverse=true) | join(' ', attribute='name') }}"
+    |
+    xargs -P {{ devture_systemd_service_manager_parallel_jobs }} -d ' ' -I '{}'
+    ansible {{ inventory_hostname }} -i {{ inventory_file }} -m service {{ '' if become is undefined else '--become' }}
+    -a "
+    name={}
+    state=stopped
+    "
+  tags:
+    - skip_ansible_lint
+  register: "stop_service_job_status"
+  delegate_to: localhost
+  become: false
+  async: "{{ devture_systemd_service_manager_parallel_async_timeout_seconds }}"
+  poll: 0
+  changed_when: false
+
+- name: Check job status for stopped services
+  ansible.builtin.async_status:
+    jid: "{{ stop_service_job_status.ansible_job_id }}"
+  register: stop_service_job_status
+  until: stop_service_job_status.finished
+  retries: "{{ devture_systemd_service_manager_parallel_job_status_retry_limit }}"
+  delay: "{{ devture_systemd_service_manager_parallel_job_status_retry_delay_seconds }}"
+  delegate_to: localhost
+  become: false
+
+- name: Cleanup async job temp file
+  ansible.builtin.async_status:
+    jid: "{{ stop_service_job_status.ansible_job_id }}"
+    mode: "cleanup"
+  delegate_to: localhost
+  become: false

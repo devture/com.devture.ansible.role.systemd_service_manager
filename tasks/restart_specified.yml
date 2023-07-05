@@ -22,20 +22,32 @@
 
     - when: devture_systemd_service_manager_services_list_to_work_with | length > 1
       block:
-        - name: Ensure systemd services are stopped
-          ansible.builtin.service:
-            name: "{{ item.name }}"
-            state: stopped
-          with_items: "{{ devture_systemd_service_manager_services_list_to_work_with | sort (attribute='priority,name', reverse=true) }}"
-          when: not ansible_check_mode
+        - when: not devture_systemd_service_manager_parallel_service_setup_enabled
+          block:
+            - name: Ensure systemd services are stopped
+              ansible.builtin.service:
+                name: "{{ item.name }}"
+                state: stopped
+              with_items: "{{ devture_systemd_service_manager_services_list_to_work_with | sort(attribute='priority,name', reverse=true) }}"
+              when: not ansible_check_mode
 
-        - name: Ensure systemd services are started
-          ansible.builtin.service:
-            name: "{{ item.name }}"
-            state: started
-            enabled: "{{ devture_systemd_service_manager_services_autostart_enabled }}"
-          with_items: "{{ devture_systemd_service_manager_services_list_to_work_with | sort (attribute='priority,name') }}"
-          when: not ansible_check_mode
+            - name: Ensure systemd services are started
+              ansible.builtin.service:
+                name: "{{ item.name }}"
+                state: started
+                enabled: "{{ devture_systemd_service_manager_services_autostart_enabled }}"
+              with_items: "{{ devture_systemd_service_manager_services_list_to_work_with | sort(attribute='priority,name') }}"
+              when: not ansible_check_mode
+
+        - when: devture_systemd_service_manager_parallel_service_setup_enabled
+          block:
+            - name: Ensure systemd services are stopped
+              ansible.builtin.include_tasks: "{{ role_path }}/tasks/stop_specified_async.yml"
+              when: not ansible_check_mode
+
+            - name: Ensure systemd services are started
+              ansible.builtin.include_tasks: "{{ role_path }}/tasks/start_specified_async.yml"
+              when: not ansible_check_mode
 
 - when: devture_systemd_service_manager_service_restart_mode == 'one-by-one'
   block:
