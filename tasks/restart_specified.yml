@@ -1,6 +1,7 @@
 ---
 
-- name: Ensure systemd is reloaded
+- when: devture_systemd_service_manager_services_list_to_work_with | length > 1
+  name: Ensure systemd is reloaded
   ansible.builtin.service:
     daemon_reload: true
 
@@ -47,7 +48,7 @@
       with_items: "{{ devture_systemd_service_manager_services_list_to_work_with | sort (attribute='priority,name') }}"
       when: not ansible_check_mode
 
-- when: devture_systemd_service_manager_up_verification_enabled | bool
+- when: devture_systemd_service_manager_up_verification_enabled | bool and devture_systemd_service_manager_services_list_to_work_with | length > 1
   name: Verify that systemd services started successfully
   block:
     # If we check service state immediately, we may succeed,
