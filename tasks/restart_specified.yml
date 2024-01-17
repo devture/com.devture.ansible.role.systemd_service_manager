@@ -74,6 +74,6 @@
           If you're on a slow or overloaded server, it may be that services take a longer time to start and that this error is a false-positive.
           You can consider raising the value of the `devture_systemd_service_manager_up_verification_delay_seconds` variable.
           See `{{ role_path }}/defaults/main.yml` for more details about that.
-      with_items: "{{ devture_systemd_service_manager_services_list_to_work_with | map(attribute='name') }}"
+      with_items: "{{ devture_systemd_service_manager_services_list_to_work_with | sort (attribute='priority,name') | map(attribute='name') }}"
       when:
         - "item.endswith('.service') and (ansible_facts.services[item] | default(none) is none or ansible_facts.services[item].state != 'running')"
