@@ -53,3 +53,29 @@ devture_systemd_service_manager_up_verification_enabled: true
 #
 # We can try to measure this gap and adjust our waiting time accordingly, but we currently don't.
 devture_systemd_service_manager_up_verification_delay_seconds: 15
+
+# devture_systemd_service_manager_parallel_service_setup_enabled controls whether systemd services should start/stop asynchronously.
+# This could significantly reduce the duration for stopping/starting services depending on the number of services on the target host.
+devture_systemd_service_manager_parallel_service_setup_enabled: false
+
+# devture_systemd_service_manager_parallel_jobs specifies how many Ansible processes can run in parallel for the given task.
+#
+# Setting this value to 0 will run as many processes as possible at a time. Note that if this value is set to 0, you may
+# need to increase your host(s) SSH configuration's `MaxSessions` property to facilitate all the connections that will be made in
+# parallel. Additionally, you may need to increase the following parameters if all services cannot start before timing out:
+# - ansible.cfg connection `timeout`
+# - `devture_systemd_service_manager_up_verification_delay_seconds`
+# - `devture_systemd_service_manager_parallel_async_timeout_seconds`
+# - `devture_systemd_service_manager_parallel_job_status_retry_limit`
+devture_systemd_service_manager_parallel_jobs: 16
+
+# devture_systemd_service_manager_parallel_async_timeout_seconds specifies how long to wait before starting the job can timeout.
+devture_systemd_service_manager_parallel_async_timeout_seconds: 60
+
+# devture_systemd_service_manager_parallel_job_status_retry_limit specifies how many attempts the Ansible will check the status
+# of the running jobs before failing the task.
+devture_systemd_service_manager_parallel_job_status_retry_limit: 60
+
+# devture_systemd_service_manager_parallel_job_status_retry_delay_seconds specifies how long Ansible will wait before it checks
+# the status of the running jobs.
+devture_systemd_service_manager_parallel_job_status_retry_delay_seconds: 1

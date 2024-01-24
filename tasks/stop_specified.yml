@@ -8,4 +8,9 @@
   ansible.builtin.service:
     name: "{{ item.name }}"
     state: stopped
-  with_items: "{{ devture_systemd_service_manager_services_list_to_work_with | sort (attribute='priority,name', reverse=true) }}"
+  with_items: "{{ devture_systemd_service_manager_services_list_to_work_with | sort(attribute='priority,name', reverse=true) }}"
+  when: not devture_systemd_service_manager_parallel_service_setup_enabled
+
+- name: Ensure systemd services are stopped
+  ansible.builtin.include_tasks: "{{ role_path }}/tasks/stop_specified_async.yml"
+  when: devture_systemd_service_manager_parallel_service_setup_enabled
