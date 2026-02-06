@@ -7,9 +7,9 @@ This is an [Ansible](https://www.ansible.com/) role which manages systemd servic
 
 - **starting** (restarting) services, in order, according to their `priority`. Services can all be stopped cleanly and then started anew, or they can be restarted one-by-one (see `devture_systemd_service_manager_service_restart_mode`)
 
-- making services **auto-start** (see `devture_systemd_service_manager_services_autostart_enabled`)
+- making services **auto-start** (see `systemd_autostart_enabled`)
 
-- **verifying** services managed to start (see `devture_systemd_service_manager_up_verification_enabled`)
+- **verifying** services managed to start (see `systemd_verify_up_enabled`)
 
 - **stopping** services, in order, according to their `priority`
 
@@ -43,7 +43,7 @@ devture_systemd_service_manager_services_list_auto: |
 
 Example playbook invocations tags (e.g. `ansible-playbook -i inventory/hosts setup.yml --tags=XXXXX`):
 
-- `restart`, `restart-all`, `start-all` - restarts all services and potentially makes them auto-start (depending on `devture_systemd_service_manager_services_autostart_enabled`)
+- `restart`, `restart-all`, `start-all` - restarts all services and potentially makes them auto-start (depending on `systemd_autostart_enabled`)
 
 - `restart-group`, `start-group` - restarts services belonging to the specified group (e.g. `--extra-vars="group=core"`)
 
