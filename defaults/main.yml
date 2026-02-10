@@ -52,7 +52,7 @@ devture_systemd_service_manager_services_list: "{{ devture_systemd_service_manag
 # With `clean-stop-start`, the VPN is stopped during the stop phase, causing connectivity loss that prevents
 # the start phase from reaching the server. The `all-at-once` mode avoids this by letting systemd handle
 # the restart transaction internally on the server side.
-devture_systemd_service_manager_service_restart_mode: clean-stop-start
+devture_systemd_service_manager_service_restart_mode: all-at-once
 
 # devture_systemd_service_manager_services_autostart_enabled controls whether systemd services should auto-start when the system reboots
 devture_systemd_service_manager_services_autostart_enabled: true
