@@ -33,6 +33,9 @@ devture_systemd_service_manager_services_list: "{{ devture_systemd_service_manag
 # The `one-by-one` mode may decrease downtime, but is potentially less reliable and "clean".
 # The `priority-batched` mode queues all services within a priority level concurrently (non-blocking), then proceeds to the next priority level.
 #
+# For a detailed comparison of these modes with real-world downtime benchmarks,
+# see docs/restart-mode-comparison.md
+#
 # The `all-at-once` mode uses `ansible.builtin.command` to invoke `systemctl restart` (or `start`) with all service names
 # as arguments in a single call. This is necessary because Ansible's `service`/`systemd` modules only accept a single
 # service name (`name: type=str`), making it impossible to pass multiple services to them.
