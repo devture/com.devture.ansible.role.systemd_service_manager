@@ -56,3 +56,4 @@ Restart mode options for `devture_systemd_service_manager_service_restart_mode`:
 - `clean-stop-start` (default) - stops all services in reverse priority order, then starts them in priority order
 - `one-by-one` - restarts each service in priority order
 - `priority-batched` - starts/restarts services in priority batches and queues them without blocking inside each batch
+- `all-at-once` - issues a single `systemctl restart` (or `start`) command with all service names, letting systemd handle the entire transaction. See `defaults/main.yml` for detailed technical rationale
