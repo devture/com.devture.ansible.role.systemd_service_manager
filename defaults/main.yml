@@ -55,11 +55,12 @@ devture_systemd_service_manager_services_list: "{{ devture_systemd_service_manag
 devture_systemd_service_manager_service_restart_mode: all-at-once
 
 # When `devture_systemd_service_manager_service_restart_mode` is `all-at-once`,
-# this controls how many total attempts are made for the single `systemctl restart ...` command.
+# this controls how many total attempts are made for each single all-at-once `systemctl restart ...`
+# or `systemctl start ...` command.
 # Set to 1 to preserve fail-fast behavior (1 attempt, no retries).
 devture_systemd_service_manager_all_at_once_retry_attempts: 1
 
-# Delay between retries for `all-at-once` restart attempts.
+# Delay between retries for `all-at-once` restart/start attempts.
 devture_systemd_service_manager_all_at_once_retry_delay_seconds: 10
 
 # devture_systemd_service_manager_conditional_restart_enabled controls whether
