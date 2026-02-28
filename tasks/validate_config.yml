@@ -11,17 +11,25 @@
     msg: >-
       Invalid value for `devture_systemd_service_manager_all_at_once_retry_attempts`:
       `{{ devture_systemd_service_manager_all_at_once_retry_attempts }}`.
-      The value must be an integer greater than or equal to 1.
+      The value must be an integer (or numeric string) greater than or equal to 1.
   when:
     - devture_systemd_service_manager_service_restart_mode == 'all-at-once'
-    - "(devture_systemd_service_manager_all_at_once_retry_attempts | int) < 1"
+    - >-
+      not (
+        (devture_systemd_service_manager_all_at_once_retry_attempts | string | trim) is match('^[0-9]+$')
+        and (devture_systemd_service_manager_all_at_once_retry_attempts | int) >= 1
+      )
 
 - name: Fail if devture_systemd_service_manager_all_at_once_retry_delay_seconds is invalid
   ansible.builtin.fail:
     msg: >-
       Invalid value for `devture_systemd_service_manager_all_at_once_retry_delay_seconds`:
       `{{ devture_systemd_service_manager_all_at_once_retry_delay_seconds }}`.
-      The value must be an integer greater than or equal to 0.
+      The value must be a non-negative integer (or numeric string).
   when:
     - devture_systemd_service_manager_service_restart_mode == 'all-at-once'
-    - "(devture_systemd_service_manager_all_at_once_retry_delay_seconds | int) < 0"
+    - >-
+      not (
+        (devture_systemd_service_manager_all_at_once_retry_delay_seconds | string | trim) is match('^[0-9]+$')
+        and (devture_systemd_service_manager_all_at_once_retry_delay_seconds | int) >= 0
+      )
