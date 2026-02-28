@@ -145,6 +145,10 @@
         - name: Restart systemd services needing restart at once
           ansible.builtin.command:
             cmd: "{{ devture_systemd_service_manager_all_at_once_restart_command }}"
+          register: devture_systemd_service_manager_all_at_once_restart_result
+          retries: "{{ [((devture_systemd_service_manager_all_at_once_retry_attempts | int) - 1), 0] | max }}"
+          delay: "{{ devture_systemd_service_manager_all_at_once_retry_delay_seconds | int }}"
+          until: devture_systemd_service_manager_all_at_once_restart_result.rc == 0
           when: not ansible_check_mode
 
     - when: not ansible_check_mode and devture_systemd_service_manager_services_actually_needing_start | default([]) | length > 0
